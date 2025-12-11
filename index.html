@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Digi-Dex V3</title>
+    <linkpreconnect href="https://fonts.googleapis.com">
+    <linkpreconnect href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- ESTÉTICA CASUAL RETRO --- */
+        :root {
+            --bg-body: #2a2538;
+            --card-bg: #f0e6d2;
+            --accent: #ff9e1b;
+            --dark: #1a1624;
+            --screen-bg: #9bbc0f;
+            --screen-text: #0f380f;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            background-image: 
+                linear-gradient(rgba(255, 158, 27, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 158, 27, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            font-family: 'VT323', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: var(--card-bg);
+        }
+
+        h1 {
+            color: var(--accent);
+            text-shadow: 4px 4px 0px var(--dark);
+            font-size: 3.5rem;
+            transform: rotate(-3deg);
+            margin-bottom: 20px;
+        }
+
+        /* --- BÚSQUEDA --- */
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+            background: var(--dark);
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.3);
+            transform: rotate(1deg);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        input, select {
+            background: var(--bg-body);
+            border: 2px dashed var(--accent);
+            color: var(--accent);
+            padding: 10px;
+            font-family: inherit;
+            font-size: 1.5rem;
+            border-radius: 10px;
+            outline: none;
+            text-align: center;
+        }
+
+        select { cursor: pointer; text-align: left; }
+
+        button {
+            background: var(--accent);
+            color: var(--dark);
+            border: 3px solid var(--card-bg);
+            padding: 10px 25px;
+            font-family: inherit;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #c27e00;
+            transition: 0.1s;
+        }
+
+        button:active { top: 5px; box-shadow: 0 0 0 #c27e00; position: relative; }
+
+        /* --- TARJETA HORIZONTAL --- */
+        #resultado { width: 100%; display: flex; justify-content: center; }
+
+        .digi-card {
+            background: var(--card-bg);
+            color: var(--dark);
+            border: 4px solid var(--dark);
+            border-radius: 20px;
+            padding: 20px;
+            width: 600px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            box-shadow: 15px 15px 0 rgba(0,0,0,0.4);
+            transform: rotate(-2deg);
+            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .left-panel {
+            flex: 1;
+            text-align: center;
+            border-right: 3px dashed var(--accent);
+            padding-right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .img-frame {
+            background: var(--bg-body);
+            padding: 10px;
+            border-radius: 15px;
+            border: 3px solid var(--dark);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .img-frame img { width: 150px; height: 150px; object-fit: contain; display: block; }
+
+        h2 { font-size: 2.2rem; margin: 0; text-transform: uppercase; line-height: 1; }
+        .level-badge {
+            background: var(--accent);
+            color: var(--dark);
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        .right-panel { flex: 1.5; display: flex; flex-direction: column; }
+
+        .desc-screen {
+            background: var(--screen-bg);
+            color: var(--screen-text);
+            padding: 15px;
+            border-radius: 10px;
+            border: 3px inset rgba(0,0,0,0.2);
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            height: 140px;
+            overflow-y: auto;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .label {
+            font-size: 1.2rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .lang-tag { font-size: 0.9rem; opacity: 0.8; }
+
+        @media (max-width: 650px) {
+            .digi-card { flex-direction: column; width: 90%; transform: rotate(0deg); }
+            .left-panel { border-right: none; border-bottom: 3px dashed var(--accent); padding-bottom: 20px; padding-right: 0; width: 100%; }
+        }
+
+        @keyframes bounceIn { from { opacity: 0; transform: scale(0.5) rotate(-10deg); } to { opacity: 1; transform: scale(1) rotate(-2deg); } }
+        .error-msg { background: #ff6b6b; color: white; padding: 20px; border: 3px solid #c92a2a; border-radius: 15px; font-size: 1.5rem; transform: rotate(3deg); }
+        /* Agrega esto al CSS de index.html */
+.btn-evo {
+    display: inline-block;
+    background: #ff4757;
+    color: white;
+    text-decoration: none;
+    padding: 5px 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    border: 2px solid #2a2538;
+    box-shadow: 3px 3px 0 #880000;
+    transition: transform 0.1s;
+}
+.btn-evo:active { transform: translateY(2px); box-shadow: 0 0 0; }
+.btn-evo:hover { background: #ff6b81; }
+    </style>
+</head>
+<body>
+
+    <h1>👾 DIGI-DEX WIDE</h1>
+
+    <div class="search-container">
+        <input type="text" id="inputNombre" placeholder="Buscar Digimon...">
+        
+        <select id="langSelect">
+            <option value="en_us">🇺🇸 ENG</option>
+            <option value="es_es">🇪🇸 ESP</option>
+            <option value="ja_jp">🇯🇵 JPN</option>
+            <option value="pt_br">🇧🇷 POR</option>
+        </select>
+
+        <button onclick="buscarDigimon()">GO!</button>
+    </div>
+
+    <div id="resultado"></div>
+
+    <script>
+        async function buscarDigimon() {
+            const input = document.getElementById('inputNombre');
+            const langSelect = document.getElementById('langSelect');
+            const resultado = document.getElementById('resultado');
+            
+            const nombre = input.value.trim().toLowerCase();
+            // Aseguramos que existe el selector, si no, inglés por defecto
+            const idiomaDeseado = langSelect ? langSelect.value : "en_us"; 
+
+            if (!nombre) return alert("¡Escribe un nombre!");
+
+            resultado.innerHTML = '<p style="font-size:2rem; animation:blink 0.5s infinite">Accediendo a la base de datos...</p>';
+
+            try {
+                // --- FASE 1: OBTENER DIGIMON ---
+                const respuesta = await fetch(`https://digi-api.com/api/v1/digimon/${nombre}`);
+                if (!respuesta.ok) throw new Error("Digimon no encontrado");
+                const data = await respuesta.json();
+
+                const digiName = data.name || "Desconocido";
+                const digiImg = (data.images && data.images.length > 0) ? data.images[0].href : "https://via.placeholder.com/150";
+                const digiLevel = (data.levels && data.levels.length > 0) ? data.levels[0].level : "Unknown";
+                
+                let description = "No description available.";
+                if (data.descriptions) {
+                    const descObj = data.descriptions.find(d => d.language === "en_us");
+                    if (descObj) description = descObj.description;
+                }
+
+               // ... dentro de la función buscarDigimon(), en la FASE 2 ...
+
+// FASE 2: RENDERIZAR ORIGINAL (Inglés)
+resultado.innerHTML = `
+    <div class="digi-card">
+        <div class="left-panel">
+            <div class="img-frame"><img src="${digiImg}" alt="${digiName}"></div>
+            <h2>${digiName}</h2>
+            <span class="level-badge">${digiLevel}</span>
+            
+            <br><br>
+            <a href="evolution.html?name=${digiName}" class="btn-evo">
+               🧬 LINEA EVOLUTIVA
+            </a>
+            </div>
+        <div class="right-panel">
+            <div class="label">
+                DATA LOG: 
+                <span class="lang-tag" id="langTag">[ENG (Original)]</span>
+            </div>
+            <div class="desc-screen" id="descText">${description}</div>
+        </div>
+    </div>
+`;
+                // --- FASE 3: TRADUCCIÓN CON LINGVA (Soporta textos largos) ---
+                if (idiomaDeseado !== "en_us") {
+                    const textBox = document.getElementById('descText');
+                    const langTag = document.getElementById('langTag');
+                    
+                    langTag.innerHTML = `[Traduciendo...]`;
+
+                    try {
+                        const langCode = idiomaDeseado.split('_')[0]; // 'es', 'ja', etc.
+                        
+                        // USAMOS LINGVA (Es un espejo de Google Translate sin keys)
+                        // endpoint: https://lingva.ml/api/v1/{source}/{target}/{text}
+                        const urlTraduccion = `https://lingva.ml/api/v1/en/${langCode}/${encodeURIComponent(description)}`;
+                        
+                        const respTrad = await fetch(urlTraduccion);
+                        const dataTrad = await respTrad.json();
+
+                        // Lingva devuelve el texto en dataTrad.translation
+                        if (dataTrad && dataTrad.translation) {
+                            textBox.innerHTML = dataTrad.translation;
+                            langTag.innerHTML = `[${langCode.toUpperCase()} (Traducido)]`;
+                        } else {
+                            throw new Error("Traducción vacía");
+                        }
+                    } catch (err) {
+                        console.warn("Error API Lingva:", err);
+                        // Fallback silencioso: si falla, se queda en inglés
+                        langTag.innerHTML = `[ENG (Error de Red)]`;
+                    }
+                }
+
+            } catch (error) {
+                resultado.innerHTML = `
+                    <div class="error-msg">
+                        🚫 ERROR 404 <br> No se encontró a "${nombre}".
+                    </div>`;
+            }
+        }
+
+        document.getElementById("inputNombre").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") buscarDigimon();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digi-Evolutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- ESTILO RETRO COMPARTIDO --- */
+        :root {
+            --bg-body: #2a2538;
+            --card-bg: #f0e6d2;
+            --accent: #ff9e1b;
+            --dark: #1a1624;
+            --evo-color: #70a1ff; /* Azulito para diferenciar esta página */
+        }
+
+        body {
+            background-color: var(--bg-body);
+            background-image: 
+                linear-gradient(rgba(112, 161, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(112, 161, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            font-family: 'VT323', monospace;
+            color: var(--card-bg);
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--evo-color);
+            text-shadow: 4px 4px 0px var(--dark);
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .btn-back {
+            background: var(--dark);
+            color: var(--evo-color);
+            border: 2px solid var(--evo-color);
+            padding: 10px 20px;
+            font-family: inherit;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 10px;
+        }
+        .btn-back:hover { background: var(--evo-color); color: var(--dark); }
+
+        /* --- CONTENEDORES DE EVOLUCIÓN --- */
+        .main-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 20px;
+            border: 4px dashed var(--evo-color);
+        }
+
+        h2 { 
+            border-bottom: 2px solid var(--accent); 
+            display: inline-block; 
+            margin-top: 30px;
+            font-size: 2rem;
+        }
+
+        .grid-evo {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* --- MINI SPRITES --- */
+        .mini-card {
+            background: var(--card-bg);
+            color: var(--dark);
+            border: 3px solid var(--dark);
+            border-radius: 10px;
+            padding: 10px;
+            width: 100px;
+            text-align: center;
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.4);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .mini-card:hover { transform: scale(1.1) rotate(-3deg); z-index: 10; }
+
+        .mini-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .mini-name {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 5px;
+            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .center-digimon {
+            transform: scale(1.2);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        .arrow { font-size: 2rem; color: var(--accent); align-self: center; }
+        
+        .loading { font-size: 2rem; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        /* ... (Mantén tu CSS anterior y agrega/cambia esto) ... */
+
+        .mini-card {
+            background: var(--card-bg);
+            color: var(--dark);
+            border: 3px solid var(--dark);
+            border-radius: 10px;
+            padding: 10px;
+            width: 110px; /* Un pelín más ancho */
+            text-align: center;
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.4);
+            transition: transform 0.2s;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mini-card:hover { transform: scale(1.1) rotate(-3deg); z-index: 10; }
+
+        .mini-card img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        .mini-name {
+            font-weight: bold;
+            font-size: 0.9rem;
+            line-height: 1;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ETIQUETA DE CONDICIÓN (NUEVO) */
+        .condition-tag {
+            font-size: 0.7rem;
+            background: #ccc;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Estilo especial para WARP (Saltos grandes) */
+        .warp-evo {
+            background: #ff4757; /* Rojo */
+            color: white;
+            border-color: #880000;
+        }
+        
+        /* Estilo para ARMOR (Digi-Huevos) */
+        .armor-evo {
+            background: #eccc68; /* Dorado */
+            border-color: #bfa148;
+        }
+
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="btn-back">⬅ VOLVER AL DIGI-DEX</a>
+    
+    <h1 id="titleName">CARGANDO...</h1>
+
+    <div id="content" class="main-container">
+        <div class="loading">ANALIZANDO ADN...</div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const digiName = params.get('name');
+
+        if (!digiName) {
+            document.getElementById('content').innerHTML = "ERROR: No se especificó un Digimon.";
+        } else {
+            loadEvolutions(digiName);
+        }
+
+        async function loadEvolutions(name) {
+            try {
+                const res = await fetch(`https://digi-api.com/api/v1/digimon/${name}`);
+                const data = await res.json();
+
+                document.getElementById('titleName').innerText = `🧬 ${data.name.toUpperCase()} DNA`;
+
+                const container = document.getElementById('content');
+                container.innerHTML = ""; 
+
+                // --- HELPER PARA CREAR TARJETAS INTELIGENTES ---
+                // Esta función decide si es Warp, Armor o Normal
+                const createCard = (d) => {
+                    let conditionText = d.condition || "Unknown";
+                    let specialClass = "";
+
+                    // Detectar si es un "Salto" (Warp)
+                    if (conditionText.toLowerCase().includes("warp")) {
+                        specialClass = "condition-tag warp-evo";
+                        conditionText = "⚡ WARP"; // Abreviamos para que quepa
+                    } 
+                    // Detectar Armor (Digi-Egg)
+                    else if (conditionText.toLowerCase().includes("digi-egg")) {
+                        specialClass = "condition-tag armor-evo";
+                        conditionText = "🥚 ARMOR";
+                    }
+                    else {
+                        specialClass = "condition-tag"; // Normal (gris)
+                    }
+
+                    return `
+                        <div class="mini-card" onclick="goTo('${d.digimon}')" title="${d.condition}">
+                            <img src="${d.image}" alt="${d.digimon}">
+                            <div class="mini-name">${d.digimon}</div>
+                            <div class="${specialClass}">${conditionText}</div>
+                        </div>
+                    `;
+                };
+
+                // --- 1. PREVIAS ---
+                let prevHtml = '<p>Origen desconocido.</p>';
+                if (data.priorEvolutions && data.priorEvolutions.length > 0) {
+                    prevHtml = data.priorEvolutions.map(d => createCard(d)).join('');
+                }
+
+                // --- 2. SIGUIENTES ---
+                let nextHtml = '<p>Fase final alcanzada.</p>';
+                if (data.nextEvolutions && data.nextEvolutions.length > 0) {
+                    // Opcional: Si quieres OCULTAR los Warp, descomenta la siguiente línea:
+                    // const filtrados = data.nextEvolutions.filter(d => !d.condition.toLowerCase().includes('warp'));
+                    // Y usa 'filtrados' en lugar de 'data.nextEvolutions' abajo.
+                    
+                    nextHtml = data.nextEvolutions.map(d => createCard(d)).join('');
+                }
+
+                // --- RENDER ---
+                container.innerHTML = `
+                    <h2> FORMAS PREVIAS</h2>
+                    <div class="grid-evo">${prevHtml}</div>
+
+                    <div style="margin: 30px 0; font-size:2rem; opacity:0.5">⬇</div>
+
+                    <div class="mini-card center-digimon" style="margin: 0 auto; width:140px; height:auto;">
+                        <img src="${data.images[0].href}" alt="${data.name}" style="width:100px; height:100px;">
+                        <div class="mini-name" style="font-size:1.4rem; margin-top:10px;">${data.name}</div>
+                    </div>
+
+                    <div style="margin: 30px 0; font-size:2rem; opacity:0.5">⬇</div>
+
+                    <h2>🦖 SIGUIENTES FORMAS</h2>
+                    <div class="grid-evo">${nextHtml}</div>
+                `;
+
+            } catch (error) {
+                document.getElementById('content').innerHTML = "Error de conexión con el servidor.";
+                console.error(error);
+            }
+        }
+
+        function goTo(newName) {
+            window.location.href = `evolution.html?name=${newName}`;
+        }
+    </script>
+</body>
+    <div id="digi-player">
+        <div class="player-screen">
+            <marquee scrolldelay="200">♪ DIGIMON THEME.MP3</marquee>
+        </div>
+        
+        <div class="player-controls">
+            <button class="btn-music" id="play-btn" onclick="togglePlay()">
+                ▶ START MUSIC
+            </button>
+            
+            <input type="range" id="vol-control" min="0" max="1" step="0.1" value="0.3" onchange="setVolume(this.value)">
+        </div>
+        
+        <audio id="audio-player" src="theme.mp3" loop></audio>
+    </div>
+
+    <style>
+        #digi-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 220px;
+            background: #1a1624;
+            border: 3px solid #ff9e1b;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: -5px -5px 0 rgba(0,0,0,0.5);
+            z-index: 9999;
+            font-family: 'VT323', monospace;
+            transform: rotate(-2deg);
+        }
+
+        .player-screen {
+            background: #0f380f;
+            color: #9bbc0f;
+            padding: 5px;
+            border: 2px inset rgba(0,0,0,0.5);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-music {
+            flex: 2;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 5px;
+        }
+
+        /* Estilo del deslizador de volumen */
+        #vol-control {
+            flex: 1;
+            height: 5px;
+            cursor: pointer;
+        }
+
+        .btn-music:hover { background: #555; }
+        
+        /* Animación al sonar */
+        .playing-mode {
+            box-shadow: 0 0 15px #ff9e1b !important;
+            border-color: #ffeaa7;
+        }
+    </style>
+
+    <script>
+        const audioPlayer = document.getElementById('audio-player');
+        const playBtn = document.getElementById('play-btn');
+        const playerBox = document.getElementById('digi-player');
+
+        // Configurar volumen inicial bajo (30%) para no asustar
+        audioPlayer.volume = 0.3;
+
+        function togglePlay() {
+            // Intentar reproducir
+            if (audioPlayer.paused) {
+                audioPlayer.play().then(() => {
+                    updateButton(true);
+                }).catch(error => {
+                    console.error("Error:", error);
+                    alert("⚠ NO SE ENCUENTRA EL ARCHIVO 'theme.mp3' EN LA CARPETA.");
+                });
+            } else {
+                audioPlayer.pause();
+                updateButton(false);
+            }
+        }
+
+        function setVolume(val) {
+            audioPlayer.volume = val;
+        }
+
+        function updateButton(isPlaying) {
+            if (isPlaying) {
+                playBtn.innerText = "⏸ PAUSE";
+                playBtn.style.background = "#ff9e1b";
+                playBtn.style.color = "black";
+                playerBox.classList.add('playing-mode');
+            } else {
+                playBtn.innerText = "▶ RESUME";
+                playBtn.style.background = "#333";
+                playBtn.style.color = "white";
+                playerBox.classList.remove('playing-mode');
+            }
+        }
+    </script>
+</html>
